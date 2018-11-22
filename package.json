@@ -31,11 +31,12 @@
     "webpack-cli": "^3.1.2"
   },
   "keywords": [
-    "tabtabs",
+    "react content tabs",
+    "react tabs",
+    "tabs",
     "react",
     "tabbed content",
-    "tab component",
-    "accessability"
+    "tab component"
   ],
   "author": "Daniel Yuschick",
   "license": "MIT",

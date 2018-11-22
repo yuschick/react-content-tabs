@@ -1,6 +1,6 @@
-var path = require('path');
+var path = require("path");
 module.exports = {
-  entry: "./src/TabTabs.js",
+  entry: "./src/ContentTabs.js",
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "index.js",

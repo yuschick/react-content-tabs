@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-
 import TabBarMount from "./components/TabBarMount";
 import TabContentMount from "./components/TabContentMount";
 
