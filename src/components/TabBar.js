@@ -8,17 +8,15 @@ import { TabPlacementMap } from '../constants/index';
 
 const TabBarNav = styled.nav`
   align-items: center;
-  background: ${props =>
-    props.variant === 'primary' ? colors.white : colors.primary};
+  background: ${colors.white};
   display: flex;
   justify-content: ${props => TabPlacementMap[props.tabPlacement]};
   position: relative;
-  ${props => props.styles};
+  ${props => props.navStyles};
 
   &:after,
   :before {
-    background: ${props =>
-      props.variant === 'primary' ? colors.primary : colors.white};
+    background: ${colors.primary};
     bottom: 0;
     content: '';
     display: block;
@@ -83,10 +81,7 @@ const TabButton = styled.button`
   border: none;
   border-bottom: 4px solid transparent;
   box-sizing: border-box;
-  color: ${props =>
-    props.variant === 'primary'
-      ? colors.tertiary
-      : colors.secondary};
+  color: ${colors.tertiary};
   cursor: pointer;
   font-size: 15px;
   font-weight: 500;
@@ -94,9 +89,10 @@ const TabButton = styled.button`
   min-height: 48px;
   padding: 0;
   text-align: center;
+  ${props => props.tabStyles};
 
   ${props =>
-    props.tabPlacement === 'fill' &&
+    props.tabPlacement === "fill" &&
     css`
       flex: 1;
     `};
@@ -119,9 +115,8 @@ const TabButton = styled.button`
     visibility: hidden;
   }
 
-  &[aria-selected='true'] {
-    color: ${props =>
-    props.variant === 'primary' ? colors.primary : colors.white};
+  &[aria-selected="true"] {
+    color: ${colors.primary};
     font-size: 16px;
   }
 
@@ -186,9 +181,9 @@ class TabBar extends Component {
 
   render() {
     const {
-      variant,
       tabPlacement,
-      styles,
+      navStyles,
+      tabStyles,
       isAnimating,
       updateActiveTab,
       activeTab,
@@ -199,7 +194,6 @@ class TabBar extends Component {
     return (
       <TabBarNav
         role="tablist"
-        variant={variant}
         ref={el => {
           this.tabBar = el;
         }}
@@ -207,15 +201,15 @@ class TabBar extends Component {
         underlineWidth={lineWidth}
         underlineDiff={leftDiff}
         className={isAnimating ? 'animating' : ''}
-        styles={styles}
+        navStyles={navStyles}
         animation={animation}
         tabPlacement={tabPlacement}
       >
         {tabs.map(tab => (
           <TabButton
-            variant={variant}
             count={tabs.length}
             tabPlacement={tabPlacement}
+            tabStyles={tabStyles}
             key={`tab-${tab.id}`}
             ref={el => {
               this[`tab_${tab.id}`] = el;
@@ -245,12 +239,13 @@ TabBar.propTypes = {
       id: PropTypes.string.isRequired,
       title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
       content: PropTypes.func.isRequired,
+      disabled: PropTypes.bool,
     })
   ).isRequired,
-  variant: PropTypes.oneOf(['primary', 'secondary']),
   tabPlacement: PropTypes.oneOf(['start', 'end', 'center', 'fill']),
   animation: PropTypes.oneOf(['slide', 'blur', 'none']),
-  styles: PropTypes.shape({}),
+  navStyles: PropTypes.shape({}),
+  tabStyles: PropTypes.shape({}),
   isAnimating: PropTypes.bool.isRequired,
   updateActiveTab: PropTypes.func.isRequired,
   endAnimation: PropTypes.func.isRequired,
@@ -263,10 +258,10 @@ TabBar.propTypes = {
 
 TabBar.defaultProps = {
   activeTab: null,
-  variant: 'primary',
   tabPlacement: 'start',
   animation: 'blur',
-  styles: {},
+  navStyles: {},
+  tabStyles: {},
 };
 
 export default TabBar;
