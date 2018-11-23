@@ -1,6 +1,6 @@
 # React Content Tabs [![npm version](https://badge.fury.io/js/react-content-tabs.svg)](https://badge.fury.io/js/react-content-tabs)
 
-![React Content Tabs](https://github.com/yuschick/react-content-tabs/blob/master/public/react-component-tabs.gif?raw=true)
+![React Content Tabs](https://github.com/yuschick/react-content-tabs/blob/master/public/react-content-tabs.gif?raw=truee)
 
 ## Documentation
 
