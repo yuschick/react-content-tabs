@@ -14,6 +14,7 @@ const TabBarMount = ({
   activeTab,
   animation,
   tabs,
+  theme,
   endAnimation,
 }) =>
   mountTo ? (
@@ -28,22 +29,24 @@ const TabBarMount = ({
         updateActiveTab={updateActiveTab}
         endAnimation={endAnimation}
         activeTab={activeTab}
+        theme={theme}
       />,
       typeof mountTo === 'string' ? document.getElementById(mountTo) : mountTo
     )
   ) : (
-      <TabBar
-        tabs={tabs}
-        tabPlacement={tabPlacement}
-        navStyles={navStyles}
-        tabStyles={tabStyles}
-        isAnimating={isAnimating}
-        animation={animation}
-        updateActiveTab={updateActiveTab}
-        endAnimation={endAnimation}
-        activeTab={activeTab}
-      />
-    );
+    <TabBar
+      tabs={tabs}
+      tabPlacement={tabPlacement}
+      navStyles={navStyles}
+      tabStyles={tabStyles}
+      isAnimating={isAnimating}
+      animation={animation}
+      updateActiveTab={updateActiveTab}
+      endAnimation={endAnimation}
+      activeTab={activeTab}
+      theme={theme}
+    />
+  );
 
 TabBarMount.propTypes = {
   tabs: PropTypes.arrayOf(
@@ -55,7 +58,7 @@ TabBarMount.propTypes = {
     })
   ).isRequired,
   mountTo: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  tabPlacement: PropTypes.oneOf(["start", "end", "center", "fill"]),
+  tabPlacement: PropTypes.oneOf(['start', 'end', 'center', 'fill']),
   navStyles: PropTypes.shape({}),
   tabStyles: PropTypes.shape({}),
   isAnimating: PropTypes.bool.isRequired,
@@ -64,9 +67,16 @@ TabBarMount.propTypes = {
   activeTab: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.node,
-    PropTypes.shape({})
+    PropTypes.shape({}),
   ]),
-  animation: PropTypes.oneOf(["slide", "blur", "none"])
+  animation: PropTypes.oneOf(['slide', 'blur', 'none']),
+  theme: PropTypes.shape({
+    base: PropTypes.string,
+    primary: PropTypes.string,
+    secondary: PropTypes.string,
+    tertiary: PropTypes.string,
+    disabled: PropTypes.string,
+  }),
 };
 
 TabBarMount.defaultProps = {
@@ -76,6 +86,7 @@ TabBarMount.defaultProps = {
   animation: 'blur',
   navStyles: {},
   tabStyles: {},
+  theme: {},
 };
 
 export default TabBarMount;

@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from "styled-components";
+import { keyframes } from 'styled-components';
 
 export const MotionBlur = keyframes`
   50% {

@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
-import { colors } from '../styles/theme';
+import colors from '../styles/theme';
+import TabPlacementMap from '../constants/index';
 import { MotionBlur, OpacityFade } from '../styles/animation';
-import { TabPlacementMap } from '../constants/index';
 
 const TabBarNav = styled.nav`
   align-items: center;
-  background: ${colors.white};
+  background: ${props => props.theme.base || colors.base};
   display: flex;
   justify-content: ${props => TabPlacementMap[props.tabPlacement]};
   position: relative;
@@ -16,7 +16,7 @@ const TabBarNav = styled.nav`
 
   &:after,
   :before {
-    background: ${colors.primary};
+    background: ${props => props.theme.primary || colors.primary};
     bottom: 0;
     content: '';
     display: block;
@@ -81,7 +81,7 @@ const TabButton = styled.button`
   border: none;
   border-bottom: 4px solid transparent;
   box-sizing: border-box;
-  color: ${colors.tertiary};
+  color: ${props => props.theme.tertiary || colors.tertiary};
   cursor: pointer;
   font-size: 15px;
   font-weight: 500;
@@ -91,8 +91,15 @@ const TabButton = styled.button`
   text-align: center;
   ${props => props.tabStyles};
 
+  &[disabled] {
+    background: ${props => props.theme.disabled || colors.disabled};
+    color: ${props => props.theme.secondary || colors.secondary};
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
   ${props =>
-    props.tabPlacement === "fill" &&
+    props.tabPlacement === 'fill' &&
     css`
       flex: 1;
     `};
@@ -102,7 +109,7 @@ const TabButton = styled.button`
   }
 
   &:focus {
-    outline-color: ${colors.outline};
+    outline-color: ${props => props.theme.secondary || colors.secondary};
   }
 
   &:after {
@@ -115,8 +122,8 @@ const TabButton = styled.button`
     visibility: hidden;
   }
 
-  &[aria-selected="true"] {
-    color: ${colors.primary};
+  &[aria-selected='true'] {
+    color: ${props => props.theme.primary || colors.primary};
     font-size: 16px;
   }
 
@@ -188,6 +195,7 @@ class TabBar extends Component {
       updateActiveTab,
       activeTab,
       animation,
+      theme,
     } = this.props;
     const { tabs, lineLeft, lineWidth, leftDiff } = this.state;
 
@@ -204,17 +212,20 @@ class TabBar extends Component {
         navStyles={navStyles}
         animation={animation}
         tabPlacement={tabPlacement}
+        theme={theme}
       >
         {tabs.map(tab => (
           <TabButton
             count={tabs.length}
             tabPlacement={tabPlacement}
             tabStyles={tabStyles}
+            theme={theme}
             key={`tab-${tab.id}`}
             ref={el => {
               this[`tab_${tab.id}`] = el;
             }}
             role="tab"
+            disabled={tab.disabled}
             aria-selected={activeTab.id === tab.id}
             aria-controls={`tab-${tab.id}-content`}
             id={`tab-${tab.id}`}
@@ -224,8 +235,8 @@ class TabBar extends Component {
             {typeof tab.title === 'string' ? (
               <span>{tab.title}</span>
             ) : (
-                tab.title
-              )}
+              tab.title
+            )}
           </TabButton>
         ))}
       </TabBarNav>
@@ -254,6 +265,13 @@ TabBar.propTypes = {
     PropTypes.node,
     PropTypes.shape({}),
   ]),
+  theme: PropTypes.shape({
+    base: PropTypes.string,
+    primary: PropTypes.string,
+    secondary: PropTypes.string,
+    tertiary: PropTypes.string,
+    disabled: PropTypes.string,
+  }),
 };
 
 TabBar.defaultProps = {
@@ -262,6 +280,7 @@ TabBar.defaultProps = {
   animation: 'blur',
   navStyles: {},
   tabStyles: {},
+  theme: {},
 };
 
 export default TabBar;

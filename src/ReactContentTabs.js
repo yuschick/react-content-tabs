@@ -1,12 +1,12 @@
-import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
-import TabBarMount from "./components/TabBarMount";
-import TabContentMount from "./components/TabContentMount";
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import TabBarMount from './components/TabBarMount';
+import TabContentMount from './components/TabContentMount';
 
 class ReactContentTabs extends Component {
   state = {
     activeTab: null,
-    isAnimating: false
+    isAnimating: false,
   };
 
   componentDidMount() {
@@ -29,10 +29,11 @@ class ReactContentTabs extends Component {
       mountTo,
       contentMount,
       tabs,
-      variant,
       navStyles,
+      tabStyles,
       tabPlacement,
-      animation
+      animation,
+      theme,
     } = this.props;
     const { activeTab, isAnimating } = this.state;
     return (
@@ -41,7 +42,6 @@ class ReactContentTabs extends Component {
           <TabBarMount
             mountTo={mountTo}
             tabs={tabs}
-            variant={variant}
             tabPlacement={tabPlacement}
             navStyles={navStyles}
             tabStyles={tabStyles}
@@ -50,6 +50,7 @@ class ReactContentTabs extends Component {
             updateActiveTab={this.updateActiveTab}
             endAnimation={this.endAnimation}
             activeTab={activeTab}
+            theme={theme}
           />
         )}
         {activeTab && (
@@ -75,19 +76,28 @@ ReactContentTabs.propTypes = {
   mountTo: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   contentMount: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   activeTab: PropTypes.number,
-  tabPlacement: PropTypes.oneOf(["start", "end", "center", "fill"]),
-  animation: PropTypes.oneOf(["slide", "blur", "none"])
+  tabPlacement: PropTypes.oneOf(['start', 'end', 'center', 'fill']),
+  animation: PropTypes.oneOf(['slide', 'blur', 'none']),
   navStyles: PropTypes.shape({}),
   tabStyles: PropTypes.shape({}),
+  theme: PropTypes.shape({
+    base: PropTypes.string,
+    primary: PropTypes.string,
+    secondary: PropTypes.string,
+    tertiary: PropTypes.string,
+    disabled: PropTypes.string,
+  }),
 };
 
 ReactContentTabs.defaultProps = {
-  mountTo: "",
-  contentMount: "",
+  mountTo: '',
+  contentMount: '',
   activeTab: 0,
   navStyles: {},
-  tabPlacement: "start",
-  animation: "blur"
+  tabStyles: {},
+  tabPlacement: 'start',
+  animation: 'blur',
+  theme: {},
 };
 
 export default ReactContentTabs;

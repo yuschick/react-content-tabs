@@ -1,7 +1,9 @@
-export const colors = {
-  white: "#fff",
-  primary: "#000052",
-  secondary: "#e3e0dd",
-  tertiary: "#9fabb8",
-  outline: "#C8C8C8",
+const colors = {
+  base: '#fff',
+  primary: '#e92525',
+  secondary: '#C8C8C8',
+  tertiary: '#9fabb8',
+  disabled: '#939393',
 };
+
+export default colors;

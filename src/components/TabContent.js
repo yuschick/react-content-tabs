@@ -1,15 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { colors } from '../styles/theme';
-
-const ContentContainer = styled.main`
-  border-top: 3px solid ${colors.secondary};
-`;
-
 const TabContent = ({ activeTab }) => (
-  <ContentContainer>
+  <main>
     <article
       role="tabpanel"
       id={`tab-${activeTab.id}-content`}
@@ -17,7 +10,7 @@ const TabContent = ({ activeTab }) => (
     >
       {activeTab.content()}
     </article>
-  </ContentContainer>
+  </main>
 );
 
 TabContent.propTypes = {
