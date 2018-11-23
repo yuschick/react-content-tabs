@@ -94,4 +94,4 @@ The following props are optional to allow customization of the Content Tabs.
 
 ### Sponsors
 
-[![Freska](https://bit.ly/2zjYWQ4)](https://www.freska.fi/)
+[![Freska](https://github.com/yuschick/react-content-tabs/blob/master/public/freska-logo.jpg?raw=true)](https://www.freska.fi/)
