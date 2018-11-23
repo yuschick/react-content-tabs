@@ -124,7 +124,6 @@ const TabButton = styled.button`
 
   &[aria-selected='true'] {
     color: ${props => props.theme.primary || colors.primary};
-    font-size: 16px;
   }
 
   a,
