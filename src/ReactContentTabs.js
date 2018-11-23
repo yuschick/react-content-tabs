@@ -14,15 +14,15 @@ class ReactContentTabs extends Component {
     this.updateActiveTab(tabs[activeTab] ? tabs[activeTab] : tabs[0]);
   }
 
-  updateActiveTab(activeTab, cb = () => false) {
+  updateActiveTab = (activeTab, cb = () => false) => {
     this.setState({ activeTab, isAnimating: true }, () => {
       cb();
     });
-  }
+  };
 
-  endAnimation() {
+  endAnimation = () => {
     this.setState({ isAnimating: false });
-  }
+  };
 
   render() {
     const {
@@ -37,8 +37,8 @@ class ReactContentTabs extends Component {
     } = this.props;
     const { activeTab, isAnimating } = this.state;
     return (
-      <Fragment>
-        {activeTab && (
+      activeTab && (
+        <Fragment>
           <TabBarMount
             mountTo={mountTo}
             tabs={tabs}
@@ -52,14 +52,13 @@ class ReactContentTabs extends Component {
             activeTab={activeTab}
             theme={theme}
           />
-        )}
-        {activeTab && (
+
           <TabContentMount
             activeTab={activeTab}
             mountTo={contentMount || mountTo}
           />
-        )}
-      </Fragment>
+        </Fragment>
+      )
     );
   }
 }
