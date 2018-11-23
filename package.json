@@ -1,6 +1,6 @@
 {
   "name": "react-content-tabs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A simple and accessible React component for tabbed content.",
   "main": "dist/index.js",
   "repository": {
