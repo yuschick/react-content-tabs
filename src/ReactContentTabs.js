@@ -53,10 +53,7 @@ class ReactContentTabs extends Component {
             theme={theme}
           />
 
-          <TabContentMount
-            activeTab={activeTab}
-            mountTo={contentMount || mountTo}
-          />
+          <TabContentMount activeTab={activeTab} mountTo={contentMount} />
         </Fragment>
       )
     );
