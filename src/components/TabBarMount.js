@@ -1,92 +1,81 @@
 import React from 'react';
-import * as ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-import TabBar from './TabBar';
+import TabsWrapper from './TabBar';
+
+const propTypes = {
+  mountTo: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  styles: PropTypes.shape({}),
+  tabs: PropTypes.shape({
+    animation: PropTypes.oneOf(['slide', 'blur', 'none']),
+    placement: PropTypes.oneOf(['start', 'end', 'center', 'fill']),
+    styles: PropTypes.shape({}),
+  }),
+  theme: PropTypes.shape({}),
+  line: PropTypes.shape({}),
+  isAnimating: PropTypes.bool,
+  endAnimation: PropTypes.func,
+  addTab: PropTypes.func,
+  setActiveTab: PropTypes.func,
+  activeTab: PropTypes.string,
+};
+
+const defaultProps = {
+  mountTo: null,
+  styles: {},
+  tabs: {
+    animation: 'slide',
+    placement: 'start',
+    styles: {},
+  },
+  activeTab: '',
+  theme: {},
+  line: {},
+  isAnimating: false,
+  addTab: () => false,
+  setActiveTab: () => false,
+  endAnimation: () => false,
+};
 
 const TabBarMount = ({
   mountTo,
-  tabPlacement,
-  navStyles,
-  tabStyles,
-  isAnimating,
-  updateActiveTab,
-  activeTab,
-  animation,
+  styles,
   tabs,
   theme,
+  line,
+  addTab,
+  isAnimating,
   endAnimation,
-}) =>
-  mountTo ? (
-    ReactDOM.createPortal(
-      <TabBar
-        tabs={tabs}
-        tabPlacement={tabPlacement}
-        navStyles={navStyles}
-        tabStyles={tabStyles}
-        isAnimating={isAnimating}
-        animation={animation}
-        updateActiveTab={updateActiveTab}
-        endAnimation={endAnimation}
-        activeTab={activeTab}
-        theme={theme}
-      />,
-      typeof mountTo === 'string' ? document.getElementById(mountTo) : mountTo
-    )
-  ) : (
-    <TabBar
+  setActiveTab,
+  activeTab,
+  children,
+}) => {
+  const TabBarComponent = (
+    <TabsWrapper
+      styles={styles}
       tabs={tabs}
-      tabPlacement={tabPlacement}
-      navStyles={navStyles}
-      tabStyles={tabStyles}
-      isAnimating={isAnimating}
-      animation={animation}
-      updateActiveTab={updateActiveTab}
-      endAnimation={endAnimation}
+      addTab={addTab}
+      setActiveTab={setActiveTab}
       activeTab={activeTab}
       theme={theme}
-    />
+      line={line}
+      isAnimating={isAnimating}
+      endAnimation={endAnimation}
+    >
+      {children}
+    </TabsWrapper>
   );
 
-TabBarMount.propTypes = {
-  tabs: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-      content: PropTypes.func.isRequired,
-      disabled: PropTypes.bool,
-    })
-  ).isRequired,
-  mountTo: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  tabPlacement: PropTypes.oneOf(['start', 'end', 'center', 'fill']),
-  navStyles: PropTypes.shape({}),
-  tabStyles: PropTypes.shape({}),
-  isAnimating: PropTypes.bool.isRequired,
-  updateActiveTab: PropTypes.func.isRequired,
-  endAnimation: PropTypes.func.isRequired,
-  activeTab: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.node,
-    PropTypes.shape({}),
-  ]),
-  animation: PropTypes.oneOf(['slide', 'blur', 'none']),
-  theme: PropTypes.shape({
-    base: PropTypes.string,
-    primary: PropTypes.string,
-    secondary: PropTypes.string,
-    tertiary: PropTypes.string,
-    disabled: PropTypes.string,
-  }),
+  return mountTo
+    ? ReactDOM.createPortal(
+        TabBarComponent,
+        typeof mountTo === 'string' ? document.getElementById(mountTo) : mountTo
+      )
+    : TabBarComponent;
 };
 
-TabBarMount.defaultProps = {
-  mountTo: '',
-  activeTab: null,
-  tabPlacement: 'start',
-  animation: 'blur',
-  navStyles: {},
-  tabStyles: {},
-  theme: {},
-};
+TabBarMount.propTypes = propTypes;
+TabBarMount.defaultProps = defaultProps;
 
 export default TabBarMount;

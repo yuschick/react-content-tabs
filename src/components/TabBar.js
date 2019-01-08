@@ -1,22 +1,121 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+import baseTheme from '../styles/theme';
 
-import colors from '../styles/theme';
-import TabPlacementMap from '../constants/index';
-import { MotionBlur, OpacityFade } from '../styles/animation';
+const propTypes = {
+  addTab: PropTypes.func.isRequired,
+  setActiveTab: PropTypes.func.isRequired,
+  endAnimation: PropTypes.func.isRequired,
+  children: PropTypes.arrayOf(PropTypes.node).isRequired,
+  styles: PropTypes.shape({}),
+  tabs: PropTypes.shape({
+    animation: PropTypes.oneOf(['slide', 'blur', 'none']),
+    placement: PropTypes.oneOf(['start', 'end', 'center', 'fill']),
+    styles: PropTypes.shape({}),
+  }),
+  theme: PropTypes.shape({}),
+  line: PropTypes.shape({}).isRequired,
+  isAnimating: PropTypes.bool.isRequired,
+  activeTab: PropTypes.string,
+};
+
+const defaultProps = {
+  theme: null,
+  styles: {},
+  tabs: {
+    animation: 'slide',
+    placement: 'start',
+    styles: {},
+  },
+  activeTab: '',
+};
+
+class TabBar extends Component {
+  componentDidMount() {
+    const { endAnimation } = this.props;
+
+    this.tabBar.addEventListener('animationend', endAnimation);
+  }
+
+  renderTabs() {
+    const {
+      tabs,
+      theme,
+      addTab,
+      setActiveTab,
+      activeTab,
+      children,
+    } = this.props;
+
+    return React.Children.map(children, child =>
+      React.cloneElement(child, {
+        tabs,
+        theme,
+        setActiveTab,
+        activeTab,
+        addTab,
+      })
+    );
+  }
+
+  render() {
+    const { styles, tabs, line, theme, isAnimating } = this.props;
+    return (
+      <TabBarNav
+        role="tablist"
+        styles={styles}
+        theme={theme}
+        tabs={tabs}
+        animation={tabs.animation}
+        ref={el => {
+          this.tabBar = el;
+        }}
+        underlineLeft={line.lineLeft}
+        underlineWidth={line.lineWidth}
+        underlineDiff={line.leftDiff}
+        className={isAnimating ? 'animating' : ''}
+      >
+        {this.renderTabs()}
+      </TabBarNav>
+    );
+  }
+}
+
+const tabPlacementMap = {
+  start: 'flex-start',
+  end: 'flex-end',
+  center: 'center',
+  fill: 'center',
+};
+
+const MotionBlur = keyframes`
+  50% {
+    filter: brightness(1.5);
+    opacity: .75;
+  }
+`;
+
+const OpacityFade = keyframes`
+  50% {
+    opacity: .75;
+  }
+`;
 
 const TabBarNav = styled.nav`
   align-items: center;
-  background: ${props => props.theme.base || colors.base};
+  background: ${props =>
+    props.theme ? props.theme.primary : baseTheme.colors.primary};
   display: flex;
-  justify-content: ${props => TabPlacementMap[props.tabPlacement]};
+  justify-content: ${props => tabPlacementMap[props.tabs.placement]};
   position: relative;
-  ${props => props.navStyles};
+
+  ${props => props.styles};
 
   &:after,
   :before {
-    background: ${props => props.theme.primary || colors.primary};
+    background: ${props =>
+      props.theme ? props.theme.base : baseTheme.colors.base};
     bottom: 0;
     content: '';
     display: block;
@@ -76,210 +175,7 @@ const TabBarNav = styled.nav`
     `};
 `;
 
-const TabButton = styled.button`
-  background: none;
-  border: none;
-  border-bottom: 4px solid transparent;
-  box-sizing: border-box;
-  color: ${props => props.theme.tertiary || colors.tertiary};
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 500;
-  margin-right: 1rem;
-  min-height: 48px;
-  padding: 0;
-  text-align: center;
-  ${props => props.tabStyles};
-
-  &[disabled] {
-    background: ${props => props.theme.disabled || colors.disabled};
-    color: ${props => props.theme.secondary || colors.secondary};
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-
-  ${props =>
-    props.tabPlacement === 'fill' &&
-    css`
-      flex: 1;
-    `};
-
-  &:last-child {
-    margin-right: 0;
-  }
-
-  &:focus {
-    outline-color: ${props => props.theme.secondary || colors.secondary};
-  }
-
-  &:after {
-    display: block;
-    content: attr(data-title);
-    font-size: 16px;
-    font-weight: 500;
-    height: 0;
-    overflow: hidden;
-    visibility: hidden;
-  }
-
-  &[aria-selected='true'] {
-    color: ${props => props.theme.primary || colors.primary};
-  }
-
-  a,
-  a:visited,
-  a:active,
-  a:hover,
-  a:link {
-    color: inherit;
-    display: block;
-    padding: 1rem 1rem calc(1rem - 4px);
-    text-decoration: none;
-  }
-
-  > span {
-    display: block;
-    padding: 1rem 1rem calc(1rem - 4px);
-  }
-`;
-
-class TabBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tabs: [],
-      lineLeft: 0,
-      lineWidth: 0,
-      leftDiff: 0,
-    };
-    this.updateActiveUnderline = this.updateActiveUnderline.bind(this);
-  }
-
-  componentDidMount() {
-    const { tabs, activeTab, endAnimation } = this.props;
-
-    this.setState({ tabs }, () => {
-      this.updateActiveUnderline(tabs[activeTab]);
-    });
-
-    this.tabBar.addEventListener('animationend', endAnimation);
-    window.addEventListener('resize', this.updateActiveUnderline);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateActiveUnderline);
-  }
-
-  updateActiveUnderline() {
-    const { lineLeft } = this.state;
-    const { activeTab } = this.props;
-    const tab = this[`tab_${activeTab.id}`];
-
-    if (tab) {
-      const diff = lineLeft - tab.offsetLeft;
-      this.setState({
-        lineLeft: tab.offsetLeft,
-        leftDiff: diff,
-        lineWidth: tab.getBoundingClientRect().width,
-      });
-    }
-  }
-
-  render() {
-    const {
-      tabPlacement,
-      navStyles,
-      tabStyles,
-      isAnimating,
-      updateActiveTab,
-      activeTab,
-      animation,
-      theme,
-    } = this.props;
-    const { tabs, lineLeft, lineWidth, leftDiff } = this.state;
-
-    return (
-      <TabBarNav
-        role="tablist"
-        ref={el => {
-          this.tabBar = el;
-        }}
-        underlineLeft={lineLeft}
-        underlineWidth={lineWidth}
-        underlineDiff={leftDiff}
-        className={isAnimating ? 'animating' : ''}
-        navStyles={navStyles}
-        animation={animation}
-        tabPlacement={tabPlacement}
-        theme={theme}
-      >
-        {tabs.map(tab => (
-          <TabButton
-            count={tabs.length}
-            tabPlacement={tabPlacement}
-            tabStyles={tabStyles}
-            theme={theme}
-            key={`tab-${tab.id}`}
-            ref={el => {
-              this[`tab_${tab.id}`] = el;
-            }}
-            role="tab"
-            disabled={tab.disabled}
-            aria-selected={activeTab.id === tab.id}
-            aria-controls={`tab-${tab.id}-content`}
-            id={`tab-${tab.id}`}
-            data-title={tab.id}
-            onClick={() => updateActiveTab(tab, this.updateActiveUnderline)}
-          >
-            {typeof tab.title === 'string' ? (
-              <span>{tab.title}</span>
-            ) : (
-              tab.title
-            )}
-          </TabButton>
-        ))}
-      </TabBarNav>
-    );
-  }
-}
-
-TabBar.propTypes = {
-  tabs: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-      content: PropTypes.func.isRequired,
-      disabled: PropTypes.bool,
-    })
-  ).isRequired,
-  tabPlacement: PropTypes.oneOf(['start', 'end', 'center', 'fill']),
-  animation: PropTypes.oneOf(['slide', 'blur', 'none']),
-  navStyles: PropTypes.shape({}),
-  tabStyles: PropTypes.shape({}),
-  isAnimating: PropTypes.bool.isRequired,
-  updateActiveTab: PropTypes.func.isRequired,
-  endAnimation: PropTypes.func.isRequired,
-  activeTab: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.node,
-    PropTypes.shape({}),
-  ]),
-  theme: PropTypes.shape({
-    base: PropTypes.string,
-    primary: PropTypes.string,
-    secondary: PropTypes.string,
-    tertiary: PropTypes.string,
-    disabled: PropTypes.string,
-  }),
-};
-
-TabBar.defaultProps = {
-  activeTab: null,
-  tabPlacement: 'start',
-  animation: 'blur',
-  navStyles: {},
-  tabStyles: {},
-  theme: {},
-};
+TabBar.propTypes = propTypes;
+TabBar.defaultProps = defaultProps;
 
 export default TabBar;

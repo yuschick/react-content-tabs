@@ -25,66 +25,66 @@ Once imported, the component can be used by adding it into the JSX with the requ
 ```js
 render() {
   return (
-    <ReactContentTabs [options] />
+    <Tabs.Tabs>
+      <Tabs.TabBar>
+        <Tabs.Tab tabFor="upcoming">Upcoming</Tabs.Tab>
+        <Tabs.Tab tabFor="completed">Completed</Tabs.Tab>
+        <Tabs.Tab tabFor="calendar">Calendar</Tabs.Tab>
+      </Tabs.TabBar>
+
+      <Tabs.ContentWrapper>
+        <Tabs.Content id="upcoming">Upcoming content.</Tabs.Content>
+        <Tabs.Content id="completed">Completed content.</Tabs.Content>
+        <Tabs.Content id="calendar">Calendar content.</Tabs.Content>
+      </Tabs.ContentWrapper>
+    </Tabs.Tabs>
   );
 }
 ```
 
-### Props
+### Options
 
-#### Required
+| Tabs.Tabs |          |             |                                                                                                                |     |
+| --------- | -------- | ----------- | -------------------------------------------------------------------------------------------------------------- | --- |
+| **Prop**  | **Type** | **Default** | **Desc**                                                                                                       |
+| theme     | object   | {}          | The `theme` prop allows the passing of an object of CSS colors to override the default theme of the component. |
 
-| Prop | Type  | Default  | Desc                                                                                                                                                                                                                                 |
-| ---- | ----- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| tabs | array | required | The `tabs` prop is an array of individual `tab` objects. The `tab` objects currently support an `content`, `disabled`, `id`, and `title` property. This object defines the tab as it will appear and associates it with its content. |
-
-```jsx
-<ReactContentTabs
-  tabs={[
-    {
-      content: PropTypes.func.isRequired,
-      disabled: PropTypes.bool,
-      id: PropTypes.string.isRequired,
-      title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-    },
-  ]}
-/>
+```js
+theme={{
+  base: '#fff',
+  disabled: '#939393',
+  inactive: '#000',
+  primary: '#e92525',
+  secondary: '#C8C8C8',
+  tertiary: '#9fabb8',
+}}
 ```
 
-| Prop     | Type           | Default  | Desc                                                                                                                                                                                                                            |
-| -------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| content  | func           | required | The `content` prop contains a function that returns the content that will be displayed whenever that tab is active.                                                                                                             |
-| disabled | bool           | false    | The `disabled` prop will deactivate the specific tab from being triggered and viewed.                                                                                                                                           |
-| id       | string         | required | The `id` prop is a required string value that will serve as the `tab` id in the rendered element attributes. The `id` is needed to ensure accessibility                                                                         |
-| title    | string or node | required | The `title` prop contains the content that will be displayed in the tab itself. Whether this is a string or a React Node, such as a `<Link>` component from `react-router`. This would allow associations between tabs and URLs |
+| Tabs.TabBar    |                                           |             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| -------------- | ----------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Prop**       | **Type**                                  | **Default** | **Desc**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| mountTo        | string or node                            | null        | The `mountTo` prop allows the Content Tabs to optionally take advantage of React Portals. There are times when the tab bar should be displayed in a separate container than the content itself and the `mountTo` prop enables that. Pass in either a string of a DOM `id` or a React node (such as a container created with `React.createRef()`) into which the Content Tabs should be inserted. If this is left blank, the Content Tabs will be rendered in their native DOM order.<br><br>Learn more about [React Portals](https://reactjs.org/docs/portals.html) |
+| styles         | object                                    | {}          | The `styles` prop allows the passing of an object of CSS properties to style the `TabBar` to fit a specific theme.                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| tabs           | object                                    | {}          | The `tabs` prop allows the passing of an object to customize the behavior of the `Tabs`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| tabs.animation | string ("blur", "slide", "none")          | slide       | The `animation` property customizes how to underline moves from tab to tab.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| tabs.placement | string ("start", "end", "center", "fill") | start       | The `placement` prop allows the positioning of the tabs horizontally within the `TabBar` container.                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| tabs.styles    | object                                    | {}          | The `styles` prop allows the passing of an object of CSS properties to style the `Tabs` themselves to fit a specific theme.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 
-#### Optional
+| Tabs.Tab |          |             |                                                                                                                                                                            |
+| -------- | -------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Prop** | **Type** | **Default** | **Desc**                                                                                                                                                                   |
+| tabFor   | string   | required    | The `tabFor` prop is a string that associates the tab with the `id` of the content section. This functions similarly to the HTML `for` attribute when working with labels. |
+| isActive | bool     | false       | The `isActive` controls the display state of the `Tab`. This can be beneficial when needing a specific tab to be displayed on a corresponding URL.                         |
 
-The following props are optional to allow customization of the Content Tabs.
+| Tabs.ContentWrapper |                |             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------- | -------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Prop**            | **Type**       | **Default** | **Desc**                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| mountTo             | string or node | null        | Similar to `mountTo` property on the `TabBar` component, the `mountTo` prop on the `ContentWrapper` accepts a string of a DOM `id` or React node to define where the content of the tabs should be rendered. This enables the ability to place the `TabBar` and `ContentWraper` in separate containers. If left blank, the `ContentWrapper` will be rendered in its native DOM order.<br><br>Learn more about [React Portals](https://reactjs.org/docs/portals.html) |
 
-| Prop         | Type                                      | Default | Desc                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| ------------ | ----------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| activeTab    | number                                    | 0       | The `activeTab` prop supports a number of a tab, based on its index value in the `tabs` array, to set as visible. This can be beneficial when needing a specific tab to be displayed on a corresponding URL.                                                                                                                                                                                                                                                                                                                                                        |
-| animation    | string ("blur", "slide", "none")          | blur    | The `animation` prop defines the way the underline moves from one active tab to the next.                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| contentMount | string or node                            | ''      | Similar to `mountTo` the `contentMount` prop accepts a string of a DOM `id` or React node to define where the content of the tabs (`tab.content`) should be rendered. This enables the ability to place the TabBar and TabContent in separate containers. If left blank, the TabContent will be rendered in its native DOM order.<br><br>Learn more about [React Portals](https://reactjs.org/docs/portals.html)                                                                                                                                                    |
-| mountTo      | string or node                            | ''      | The `mountTo` prop allows the Content Tabs to optionally take advantage of React Portals. There are times when the tab bar should be displayed in a separate container than the content itself and the `mountTo` prop enables that. Pass in either a string of a DOM `id` or a React node (such as a container created with `React.createRef()`) into which the Content Tabs should be inserted. If this is left blank, the Content Tabs will be rendered in their native DOM order.<br><br>Learn more about [React Portals](https://reactjs.org/docs/portals.html) |
-| navStyles    | object                                    | {}      | The `navStyles` prop allows the passing of an object of CSS properties to style the TabBar to fit a specific theme.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| tabPlacement | string ("start", "end", "center", "fill") | start   | The `tabPlacement` prop allows the positioning of the tabs horizontally within the TabBar container.                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| tabStyles    | object                                    | {}      | The `tabStyles` prop allows the passing of an object of CSS properties to style the Tabs to fit a specific theme.                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| theme        | object                                    | {}      | The `theme` prop allows the passing of an object of CSS colors to override the default theme of the component.                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-
-```jsx
-<ReactContentTabs
-  ...
-  theme={{
-    base: '#fff',
-    primary: '#e92525',
-    secondary: '#C8C8C8',
-    tertiary: '#9fabb8',
-    disabled: '#939393',
-  }}
-/>
-```
+| Tabs.Content |          |             |                                                                                                                   |
+| ------------ | -------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Prop**     | **Type** | **Default** | **Desc**                                                                                                          |
+| id           | string   | required    | The `id` property applies an `id` to the content section which allows it to be associated with the correct `Tab`. |
 
 ### Contact
 
